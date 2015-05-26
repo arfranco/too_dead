@@ -12,3 +12,5 @@
 *.o
 *.a
 mkmf.log
+db/too_dead.db
+
