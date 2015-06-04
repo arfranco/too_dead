@@ -18,19 +18,45 @@ module TooDead
       @user = nil
     end
 
-  def login
-    puts "Welcome!"
-    puts "\n\n"
-    puts "Please enter your name: "
-    result = gets.chomp
-    until result =~ /^\w+$/
-      puts "Please enter a name: "
-      result = gets.chomp
+    def login
+      puts "Welcome!"
+      puts "\n\n"
+      user_name_input = prompt("Please enter your username: ",/^\w+$/ )
+      @user = User.find_or_create_by(name: user_name_input)
     end
-    @user = User.find_or_create_by(name: result)
-  end
 
-     def delete_list
+    def intro_page 
+      puts "Hello #{@user}. What would you like to do?"
+      menu_input = prompt("Would you like to exit this application ('e'), delete your username and all of your lists ('d') or view your lists ('v')?", /^[edv]$/)
+      if menu_input == 'e'
+        exit
+      elsif menu_input == 'd'
+        self.delete_user
+        exit
+      else
+        self.choose_list
+      end
+    end
+
+    def delete_user
+      @user.destroy
+    end
+
+    def choose_list
+
+    def prompt(question, validator)
+      puts question
+      input = gets.chomp
+      until input =~ validator
+        puts "Sorry, I didn't understand that."
+        puts question
+        input = gets.chomp
+      end
+      input
+    end
+
+
+    def delete_list
       @todo_list.destroy
     end
     
@@ -56,6 +82,5 @@ module TooDead
         @todo_list = TodoList.find(result)
       end
     end
-    binding.pry
   end
 end
